@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 @RequestMapping("/shop")
 public class ShopController {
@@ -25,6 +25,7 @@ public class ShopController {
 	ProductsRepository repository;
 	
 	// Response sin datos adicionales
+	@CrossOrigin(origins = "*")
 	@GetMapping("/products-con-querystring")
 	public @ResponseBody ResponseEntity<List<Product>> getProductsConQueryString(@RequestParam("page") Integer pageNumber, 
 																   @RequestParam("size") Integer pageSize){
@@ -57,9 +58,9 @@ public class ShopController {
 	public @ResponseBody ResponseEntity<List<Product>> getProductsResponseConHeaders(@RequestHeader("x-pagination-page") Integer pageNumber, 
 																   @RequestHeader("x-pagination-size") Integer pageSize){
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("x-pagination-page", pageNumber.toString());
-		headers.add("x-pagination-size", pageSize.toString());
-		headers.add("x-pagination-total-results", "20");
+		headers.add("x-current-page", pageNumber.toString());
+		headers.add("x-items-per-page", pageSize.toString());
+		headers.add("x-total-results", "20");
 
 		Pagination pagination = new Pagination(pageNumber, pageSize, null);
 		List<Product> productos = repository.obtenerProductos(pagination);
