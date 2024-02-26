@@ -5,9 +5,9 @@ import com.helloworld.paginacion_servicios_rest.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
-
 @Repository
 public class ProductsRepository {
 	@Autowired
@@ -36,12 +36,12 @@ public class ProductsRepository {
 		if(pagination.getPageSize() == null){
 			return "";
 		}
+	
+		int numRowStart = 0;
+		if(pagination.getPageSize() != 0){
+			numRowStart = (pagination.getPageNumber() - 1) * pagination.getPageSize();
+		}
 		
-		/* TODO 
-		    Pregunta si recibimos la página como le indicamos que es el registro x, 
-		    por ejemplo si recibimos la pag 2 y longitud 5 en LIMIT tendremos que poner LIMIT 6, 5
-		    o no?
-		 */
-		return " LIMIT " + pagination.getPageNumber() + ", " + pagination.getPageSize();
+		return " LIMIT " + numRowStart + ", " + pagination.getPageSize();
 	}
 }
