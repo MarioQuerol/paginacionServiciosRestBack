@@ -60,10 +60,11 @@ public class ShopController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("x-current-page", pageNumber.toString());
 		headers.add("x-items-per-page", pageSize.toString());
-		headers.add("x-total-results", "20");
 
 		Pagination pagination = new Pagination(pageNumber, pageSize, null);
 		List<Product> productos = repository.obtenerProductos(pagination);
+		
+		headers.add("x-total-results", pagination.getTotalResult().toString());
 
 		return ResponseEntity.status(HttpStatus.OK)
 							 .headers(headers)

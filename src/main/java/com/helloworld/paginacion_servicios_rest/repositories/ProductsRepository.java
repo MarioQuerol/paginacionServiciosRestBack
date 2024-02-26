@@ -19,6 +19,7 @@ public class ProductsRepository {
 		query.append(" ORDER BY ID ASC ");
 		query.append(aniadirPaginacion(pagination));
 		
+		pagination.setTotalResult(getTotalResults());
 		
 		return jdbcTemplate.query(query.toString(), (rs,rowNum) -> {
 			Product product = new Product();
@@ -29,6 +30,10 @@ public class ProductsRepository {
 			
 			return product;
 		});
+	}
+
+	private int getTotalResults() {
+		return jdbcTemplate.queryForObject("select count(*) from products", null, Integer.class);
 	}
 
 	private String aniadirPaginacion(Pagination pagination) {
