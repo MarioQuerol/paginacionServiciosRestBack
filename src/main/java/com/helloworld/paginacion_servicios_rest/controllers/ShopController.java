@@ -24,6 +24,7 @@ public class ShopController {
 	@Autowired
 	ProductsRepository repository;
 	
+	// Response sin datos adicionales
 	@GetMapping("/products-con-querystring")
 	public @ResponseBody ResponseEntity<List<Product>> getProductsConQueryString(@RequestParam("page") Integer pageNumber, 
 																   @RequestParam("size") Integer pageSize){
@@ -35,12 +36,30 @@ public class ShopController {
 		return ResponseEntity.status(HttpStatus.OK)
 							 .headers(headers)
 							 .body(productos);
-	}	
-	
+	}
+
+	// Response sin datos adicionales
 	@GetMapping("/products-con-headers")
 	public @ResponseBody ResponseEntity<List<Product>> getProductsConHeaders(@RequestHeader("x-pagination-page") Integer pageNumber, 
 																   @RequestHeader("x-pagination-size") Integer pageSize){
 		HttpHeaders headers = new HttpHeaders();
+
+		Pagination pagination = new Pagination(pageNumber, pageSize, null);
+		List<Product> productos = repository.obtenerProductos(pagination);
+
+		return ResponseEntity.status(HttpStatus.OK)
+							 .headers(headers)
+							 .body(productos);
+	}
+	
+	// Request con headers
+	@GetMapping("/products-con-headers-en-response")
+	public @ResponseBody ResponseEntity<List<Product>> getProductsResponseConHeaders(@RequestHeader("x-pagination-page") Integer pageNumber, 
+																   @RequestHeader("x-pagination-size") Integer pageSize){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("x-pagination-page", pageNumber.toString());
+		headers.add("x-pagination-size", pageSize.toString());
+		headers.add("x-pagination-total-results", "20");
 
 		Pagination pagination = new Pagination(pageNumber, pageSize, null);
 		List<Product> productos = repository.obtenerProductos(pagination);
