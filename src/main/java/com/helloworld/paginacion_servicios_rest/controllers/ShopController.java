@@ -2,8 +2,12 @@ package com.helloworld.paginacion_servicios_rest.controllers;
 
 import com.helloworld.paginacion_servicios_rest.models.Pagination;
 import com.helloworld.paginacion_servicios_rest.models.Product;
+import com.helloworld.paginacion_servicios_rest.repositories.ProductRepositoryJPA;
 import com.helloworld.paginacion_servicios_rest.repositories.ProductsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +27,9 @@ import java.util.List;
 public class ShopController {
 	@Autowired
 	ProductsRepository repository;
+	
+	@Autowired
+	ProductRepositoryJPA repositoryJPA;
 	
 	// Response sin datos adicionales
 	@CrossOrigin(origins = "*")
@@ -69,5 +76,21 @@ public class ShopController {
 		return ResponseEntity.status(HttpStatus.OK)
 							 .headers(headers)
 							 .body(productos);
+	}
+	
+	// Request con objeto de spring
+	@GetMapping("/products-con-spring-page")
+	public ResponseEntity<Page<Product>> getProductsConPageable(@PageableDefault(value = 2, page = 0) Pageable pageable){
+		Page<Product> productos = repositoryJPA.findAll(pageable);
+
+		return ResponseEntity.ok(productos);
+	}
+
+	// Request con objeto de spring
+	@GetMapping("/products-con-spring-list")
+	public ResponseEntity<List<Product>> getProductsConPageableList(@PageableDefault(value = 2, page = 0) Pageable pageable){
+		Page<Product> productos = repositoryJPA.findAll(pageable);
+
+		return ResponseEntity.ok(productos.getContent());
 	}
 }
